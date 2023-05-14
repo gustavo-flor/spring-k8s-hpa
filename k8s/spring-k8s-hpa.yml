@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skh-deployment
+  labels:
+    app: skh-app
+spec:
+  selector:
+    matchLabels:
+      app: skh-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: skh-app
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: skh-app
+          image: spring-k8s-hpa
+          imagePullPolicy: Never
+          args:
+            - "-Xms64m" # Heap initial memory size
+            - "-Xmx128m" # Heap max memory size
+            - "-XX:MaxRAM=256m" # JVM max memory size (stack, heap, etc...)
+          env:
+            - name: KAFKA_BROKERS
+              value: kafka-service:19092
